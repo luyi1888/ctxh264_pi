@@ -5,3 +5,7 @@ __attribute__((constructor)) static void init_bcm_omx (void)
 }
 
 
+__attribute__((destructor)) static void deinit_bcm_omx(void)
+{
+   bcm_host_deinit();
+}
