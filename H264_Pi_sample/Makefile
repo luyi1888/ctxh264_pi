@@ -1,4 +1,4 @@
-OBJS=egl.o video_gl.o
+OBJS=video_gl.o
 BIN=ctxh264.so
 LDFLAGS+=-lilclient -lXfixes -lXext -lX11
 

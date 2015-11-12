@@ -42,27 +42,6 @@ typedef unsigned char BOOL;
 #define max(a,b) (((a) > (b)) ? (a) : (b)) 
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 
-typedef struct _OMXH264_watermark
-{
-    void                        *image;
-    DISPMANX_RESOURCE_HANDLE_T  resource;
-    DISPMANX_ELEMENT_HANDLE_T   element;
-    uint32_t                    vc_image_ptr;
-    int                         width, height;
-} OMXH264_watermark;
-
-typedef struct _OMXH264_cursor
-{
-    XFixesCursorImage           *X_cur;
-    void                        *image;
-    DISPMANX_RESOURCE_HANDLE_T  resource;
-    DISPMANX_ELEMENT_HANDLE_T   element;
-    uint32_t                    vc_image_ptr;
-    int                         width, height;
-    int                         xhot, yhot;
-    int                         lx, ly;
-} OMXH264_cursor;
-
 typedef struct _comp_details {
     COMPONENT_T    *component;
     OMX_HANDLETYPE  handle;
@@ -75,59 +54,14 @@ typedef struct _OMXH264_decoder {
     TUNNEL_T        tunnel[2];
 
     comp_details    *image_decode;
-    comp_details    *image_resize;   /* Seamless. */
-    comp_details    *egl_render;
-    EGLImageKHR     egl_image;
+    comp_details    *video_render;
     int             renderer_init;
 
-    /* Cursor support in EGL mode. */
-    OMXH264_cursor  cursor;
-    pthread_t       mouse_reader;
-    int             mouse_fd;
-    pthread_t       window_reader;
-    int             terminate_readers;
-    Display         *disp;
-    Screen          *scr;
-    Window          ica_window;
-    Window          ica_parent;
-
-    /* Watermark. */
-    OMXH264_watermark watermark;
-
-    /* XImage for seamless. */
-    XImage          *fb;
-    unsigned int    size;
-    XShmSegmentInfo shm_info;
-    int             shm_id;
-    void            *old_ptr;
-
-    /* Dirty rects. */
-    SIGNED_RECT     dirty_rects[31];
-    int             num_rects;
-
-    int             dest_x;
-    int             dest_y;
     int             width;
     int             height;
-    int             stride;
-    void		    *output_buffer;
-    OMX_BUFFERHEADERTYPE        *outbuf;
 
-    EGL_DISPMANX_WINDOW_T       nativewindow;
-
-    DISPMANX_ELEMENT_HANDLE_T   dispman_element;
-    DISPMANX_DISPLAY_HANDLE_T   dispman_display;
-    DISPMANX_UPDATE_HANDLE_T    dispman_update;
-
-    EGLDisplay      display;
-    EGLSurface      surface;
-    EGLContext      context;
-    GLuint          tex;
 } OMXH264_decoder;
 
-void move_egl_display(OMXH264_decoder *decoder, BOOL force);
-void init_ogl(OMXH264_decoder *decoder);
-void deinit_ogl(OMXH264_decoder *decoder);
 
 bool v3_init();
 H264_context v3_open_context(int width, int height, void *codec_data, int len, unsigned int options);
